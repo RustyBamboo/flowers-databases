@@ -43,16 +43,30 @@ def setupDatabase():
     '''
         Setup the log table, triggers, and indices
     '''
+    # Copy the database file, and delete any existing database file if it exists
+    import os
+    import shutil
+
+    if os.path.isfile('flowers.db'):
+        os.remove('flowers.db')
+    
+    shutil.copyfile('database/flowers.db', 'flowers.db')
+
     conn = sqlite3.connect('flowers.db')
     c = conn.cursor()
+
+    # Create the log table
     c.execute("CREATE TABLE LOG (EVENT TEXT NOT NULL, TIME datetime default current_timestamp)")
+    
+    # Add in the logging triggers
     # INSERT INTO LOG(EVENT) values('test') query for logging trigger
+    
     conn.commit()
     conn.close()
     return
 
 # For the purposes of this assignment, the flowers.db is assumed to be a fresh copy of the flowers database
-setupDatabase(c)
+setupDatabase()
 app = Flask(__name__)
 
 @app.route('/')
