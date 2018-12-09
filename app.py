@@ -69,6 +69,15 @@ def setupDatabase():
 setupDatabase()
 app = Flask(__name__)
 
+@app.route('/log')
+def log():
+    conn = sqlite3.connect('flowers.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM LOG")
+    ret = c.fetchall()
+    conn.close()
+    return render_template("log.html", content = ret)
+
 @app.route('/')
 def index():
     return redirect('/flowers')
