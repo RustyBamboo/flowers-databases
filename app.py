@@ -1,8 +1,7 @@
 #!python
 
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, jsonify
 from google_images_download import google_images_download
-from io import StringIO
 import sqlite3
 
 def queryFlowerList(c):
@@ -36,31 +35,40 @@ def setupDatabase(c):
     return
 
 # For the purposes of this assignment, the flowers.db is assumed to be a fresh copy of the flowers database
-conn = sqlite3.connect('flowers.db')
-c = conn.cursor()
-setupDatabase(c)
+#setupDatabase(c)
 app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return redirect('/flowers')
 
 @app.route('/flowers')
 def flowers():
     '''
         Show all flowers and fetch images from google
     '''
+    conn = sqlite3.connect('flowers.db')
+    c = conn.cursor()
 
     import os
-   
-    flower_name = 'flower'
-    output_directory = 'static/flower_imgs'
-    if flower_name not in os.listdir(output_directory):
-        arguments = {"keywords":flower_name,"output_directory": output_directory, "no_directory": True, "limit":1,"print_urls":True} 
-        response = google_images_download.googleimagesdownload()
-        path = response.download(arguments)
-        print(path[flower_name])
-        os.rename(path[flower_name][0], output_directory + '/' + flower_name)
+    flowers = queryFlowerList(c)
+    flowers = [i[0] for i in flowers]
+    # Make sure there are images
+    for flower in flowers:
+        flower_name = flower + ' flower'
+        output_directory = 'static/flower_imgs'
+        if flower_name not in os.listdir(output_directory):
+            arguments = {"keywords":flower_name,"output_directory": output_directory, "no_directory": True, "limit":1,"print_urls":True} 
+            response = google_images_download.googleimagesdownload()
+            path = response.download(arguments)
+            print(path[flower_name])
+            os.rename(path[flower_name][0], output_directory + '/' + flower_name)
 
-    imgs = os.listdir(output_directory)
-    imgs = ['flower_imgs/' + file for file in imgs]
+    
+    imgs = ['flower_imgs/' + f + ' flower' for f in flowers]
+    print(imgs)
+    hists = zip(imgs, flowers)
      
-    return render_template('flowers.html', hists = imgs)
+    return render_template('flowers.html', hists = hists)
 
 app.run(debug=True)

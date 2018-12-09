@@ -1,1 +1,2 @@
-web/static/flower_imgs
+static/flower_imgs/*
+flowers.db

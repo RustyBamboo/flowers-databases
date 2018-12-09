@@ -4,10 +4,35 @@
     <title>
         Flowers
     </title>
+    <style>
+        div.gallery {
+          margin: 5px;
+          border: 1px solid #ccc;
+          float: left;
+          width: 180px;
+        }
+        
+        div.gallery:hover {
+          border: 1px solid #777;
+        }
+        
+        div.gallery img {
+          width: 100%;
+          height: auto;
+        }
+        
+        div.desc {
+          padding: 15px;
+          text-align: center;
+        }
+    </style>
 </head>
 <body>
-    {% for hist in hists %}
-        <img src="{{url_for('static', filename=hist)}}" alt="{{hist}}">
+    {% for img, flower in hists %}
+    <div class="gallery">
+        <img src="{{url_for('static', filename=img)}}" alt="{{flower}}" width="200px" style="float:left;">
+        <div class="desc">{{flower}}</div>
+    </div>
     {% endfor %}
 </body>
 </html>
