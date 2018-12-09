@@ -55,13 +55,26 @@ def setupDatabase():
     conn = sqlite3.connect('flowers.db')
     c = conn.cursor()
 
-    # Create the log table
-    c.execute("CREATE TABLE LOG (EVENT TEXT NOT NULL, TIME datetime default current_timestamp)")
-    
-    # Add in the logging triggers
-    # INSERT INTO LOG(EVENT) values('test') query for logging trigger
-    
+    # Create the log table and the logging triggers
+    c.executescript("""CREATE TABLE LOG (EVENT TEXT NOT NULL, TIME datetime default current_timestamp);
+                    
+                    CREATE TRIGGER INSERT_FLOWERS AFTER INSERT ON FLOWERS
+                    BEGIN
+                        INSERT INTO LOG(EVENT) values('Inserting into FLOWERS values: ' || NEW.GENUS || ', ' || NEW.SPECIES || ', ' || NEW.COMNAME);
+                    END;
+                    
+                    CREATE TRIGGER INSERT_FEATURES AFTER INSERT ON FEATURES
+                    BEGIN
+                        INSERT INTO LOG(EVENT) values('Inserting into FEATURES values: ' || NEW.LOCATION || ', ' || NEW.CLASS || ', ' || NEW.LATITUDE || ', ' || NEW.LONGITUDE || ', ' || NEW.MAP || ', ' || NEW.ELEV);
+                    END;
+                    
+                    CREATE TRIGGER INSERT_SIGHTINGS AFTER INSERT ON SIGHTINGS
+                    BEGIN
+                        INSERT INTO LOG(EVENT) values('Inserting into SIGHTINGS values: ' || NEW.NAME || ', ' || NEW.PERSON || ', ' || NEW.LOCATION || ', ' || NEW.SIGHTED);
+                    END;
+    """)
     conn.commit()
+    
     conn.close()
     return
 
