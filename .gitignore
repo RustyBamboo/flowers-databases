@@ -1,2 +1,3 @@
 static/flower_imgs/*
 flowers.db
+!/database/*
