@@ -1,3 +1,4 @@
-static/flower_imgs/*
+/static/flower_imgs/*
+!/static/flower_imgs/README.md
 flowers.db
 !/database/*
