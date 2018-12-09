@@ -64,9 +64,6 @@ def flowers():
     '''
         Show all flowers and fetch images from google
     '''
-    conn = sqlite3.connect('flowers.db')
-    c = conn.cursor()
-
     import os
     flowers = queryFlowerList()
     flowers = [i[0] for i in flowers]
