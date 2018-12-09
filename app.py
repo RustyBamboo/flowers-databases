@@ -77,17 +77,17 @@ def setupDatabase():
                     BEGIN
                         INSERT INTO LOG(EVENT) values('Updating FLOWERS values: ' || OLD.GENUS || ', ' || OLD.SPECIES || ', ' || OLD.COMNAME || ' to: ' || NEW.GENUS || ', ' || NEW.SPECIES || ', ' || NEW.COMNAME);
                     END;
-                    
+
                     CREATE TRIGGER UPDATE_FEATURES AFTER UPDATE ON FEATURES
                     BEGIN
                         INSERT INTO LOG(EVENT) values('Updating FEATURES values: ' || OLD.LOCATION || ', ' || OLD.CLASS || ', ' || OLD.LATITUDE || ', ' || OLD.LONGITUDE || ', ' || OLD.MAP || ', ' || OLD.ELEV || ' to: ' || NEW.LOCATION || ', ' || NEW.CLASS || ', ' || NEW.LATITUDE || ', ' || NEW.LONGITUDE || ', ' || NEW.MAP || ', ' || NEW.ELEV);
                     END;
-                    
+
                     CREATE TRIGGER UPDATE_SIGHTINGS AFTER UPDATE ON SIGHTINGS
                     BEGIN
-                        INSERT INTO LOG(EVENT) values('Updating SIGHTINGS values: ' || OLD.NAME || ', ' || OLD.PERSON || ', ' || OLD.LOCATION || ', ' || OLD.SIGHTED ' to: ' || NEW.NAME || ', ' || NEW.PERSON || ', ' || NEW.LOCATION || ', ' || NEW.SIGHTED);
+                        INSERT INTO LOG(EVENT) values('Updating SIGHTINGS values: ' || OLD.NAME || ', ' || OLD.PERSON || ', ' || OLD.LOCATION || ', ' || OLD.SIGHTED || ' to: ' || NEW.NAME || ', ' || NEW.PERSON || ', ' || NEW.LOCATION || ', ' || NEW.SIGHTED);
                     END;
-                    
+
                     CREATE TRIGGER DELETE_FLOWERS AFTER DELETE ON FLOWERS
                     BEGIN
                         INSERT INTO LOG(EVENT) values('Deleting from FLOWERS values: ' || OLD.GENUS || ', ' || OLD.SPECIES || ', ' || OLD.COMNAME);
