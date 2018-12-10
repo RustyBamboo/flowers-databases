@@ -23,10 +23,10 @@ def queryFlower(flower):
 
 # Note: Python SQLite3 treats each execute as part of a transaction.  All queries up to the next commit() are part of a single transaction, and can be rolled back using rollback().
 def updateFlower(flower, genus, species):
-    print(flower, genus, species)
+    #print(flower, genus, species)
     conn = sqlite3.connect('flowers.db')
     c = conn.cursor()
-    c.execute("UPDATE FLOWERS SET GENUS=?, SPECIES=? WHERE COMNAME=?", genus, species, flower)
+    c.execute("UPDATE FLOWERS SET GENUS=?, SPECIES=? WHERE COMNAME=?", (genus, species, flower))
     ret = c.fetchall()
     conn.commit()
     conn.close()
@@ -35,7 +35,7 @@ def updateFlower(flower, genus, species):
 def insertSighting(name, person, loc, sighted):
     conn = sqlite3.connect('flowers.db')
     c = conn.cursor()
-    c.execute("INSERT INTO SIGHTINGS VALUES(?,?,?,?)", name, person, loc, sighted)
+    c.execute("INSERT INTO SIGHTINGS VALUES(?,?,?,?)", (name, person, loc, sighted))
     ret = c.fetchall()
     conn.commit()
     conn.close()
