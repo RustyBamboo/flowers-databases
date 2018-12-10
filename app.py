@@ -1,6 +1,7 @@
 #!python
 
-from flask import Flask, render_template, redirect, jsonify
+from flask import Flask, render_template, redirect, jsonify, request
+import json
 from google_images_download import google_images_download
 import sqlite3
 
@@ -22,6 +23,7 @@ def queryFlower(flower):
 
 # Note: Python SQLite3 treats each execute as part of a transaction.  All queries up to the next commit() are part of a single transaction, and can be rolled back using rollback().
 def updateFlower(flower, genus, species):
+    print(flower, genus, species)
     conn = sqlite3.connect('flowers.db')
     c = conn.cursor()
     c.execute("UPDATE FLOWERS SET GENUS=?, SPECIES=? WHERE COMNAME=?", genus, species, flower)
@@ -146,9 +148,16 @@ def flowers():
 
     
     imgs = ['flower_imgs/' + f + ' flower' for f in flowers]
-    print(imgs)
     hists = zip(imgs, flowers)
      
     return render_template('flowers.html', hists = hists)
+
+@app.route('/flowers', methods=['POST'])
+def update():
+    g = request.form['genus']
+    s = request.form['species']
+    f = request.form['flower-input']
+    updateFlower(f, g, s)
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
 
 app.run(debug=True)
