@@ -252,7 +252,7 @@ def update():
         f = request.form['flower-input']
         try:
             insertSighting(f, person, location, sighted)
-        except e:
+        except:
             return json.dumps({'success':False}), 200, {'ContentType':'application/json'} 
         return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
     g = request.form['genus']
@@ -260,7 +260,7 @@ def update():
     f = request.form['flower-input']
     try:
         updateFlower(f, g, s)
-    except e:
+    except:
         return json.dumps({'success':False}), 200, {'ContentType':'application/json'} 
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
 
