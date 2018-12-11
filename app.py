@@ -1,6 +1,6 @@
 #!python
 
-from flask import Flask, render_template, redirect, jsonify, request
+from flask import Flask, render_template, redirect, jsonify, request, session
 import json
 import hashlib
 from google_images_download import google_images_download
@@ -125,6 +125,7 @@ def setupDatabase():
 # For the purposes of this assignment, the flowers.db is assumed to be a fresh copy of the flowers database
 setupDatabase()
 app = Flask(__name__)
+app.secret_key = 'plzjustenditall'
 
 @app.route('/log')
 def log():
@@ -137,10 +138,14 @@ def log():
 
 @app.route('/')
 def index():
+    if "loggedin" in session:
+        return redirect("/flowers")
     return app.send_static_file('login.html')
 
 @app.route('/register')
 def register():
+    if "loggedin" in session:
+        return redirect("/flowers")
     return app.send_static_file('register.html')
 
 
@@ -167,18 +172,30 @@ def register_new():
 
 @app.route('/', methods=['POST'])
 def login():
+    '''
+        Process login information. Save user in session.
+    '''
     username = request.form['user']
-    #print(username)
     password = request.form['pass']
     conn = sqlite3.connect('flowers.db')
     c = conn.cursor()
     c.execute("SELECT HASH FROM USERS WHERE USER=?", (username,))
     ret = c.fetchall()
-    print(ret)
     conn.close()
+    if len(ret) < 1:
+        return app.send_static_file('login.html')
+
+    if ret[0][0] == encrypt_string(password):
+        session["loggedin"] = True
+        return redirect("/flowers")
 
     return app.send_static_file('login.html')
 
+@app.route('/logout')
+def logout():
+    if "loggedin" in session:
+        session.pop("loggedin", None)
+    return redirect("/")
 
 @app.route('/flowers')
 def flowers():
