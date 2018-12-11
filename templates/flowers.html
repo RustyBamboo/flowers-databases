@@ -8,12 +8,14 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script>
             $(document).ready(function(){
+                var $flower = null;
                 $(".gallery").click(function(){
-                    var $flower = $(this).attr("id");
+                    $flower = $(this).attr("id");
                     $(".show").fadeIn();
                     var $src = $(this).children("img").attr("src");
                     $(".img-show img").attr("src", $src);
                     $("#flower-input").val($flower);
+                    $("#flower-input-sighting").val($flower);
                     $(".recent-sightings").empty();
                     $.ajax({
                         type: "POST",
@@ -76,12 +78,41 @@
                         url: url,
                         data: form.serialize(), // serializes the form's elements.
                         dataType: 'json',
-                        success: function(data)
+                        success: function(data_out)
                         {
-                            if(data.success == true) {
+                            if(data_out.success == true) {
                                 $("#insert-sighting-submit").val("Added!");
+                                $(".recent-sightings").empty();
+                                $.ajax({
+                                    type: "POST",
+                                    url: "recent",
+                                    data:{flower: $flower},
+                                    dataType: 'json',
+                                    success: function(data)
+                                    {
+                                        if(data.success == true) {
+                                            console.log(data.sightings);
+                                            $(".recent-sightings").append("<tr><th>Name</th><th>Location</th><th>Sighted</th></tr>");
+
+                                            data.sightings.forEach(function(item) {
+                                                $name = item[0];
+                                                $where = item[1];
+                                                $d = item[2];
+                                                $(".recent-sightings").append(
+                                                    "<tr><th>" + $name + "</th>" +  
+                                                    "<th>" + $where + "</th>" +
+                                                    "<th>" + $d + "</th></tr>"
+                                                ); 
+                                            });
+
+                                        }
+                                    }
+                                });
+
+
+
                             }
-                            if(data.success == false) {
+                            if(data_out.success == false) {
                                 $("#insert-sighting-submit").val("Failed!");
                             }
 
@@ -139,7 +170,7 @@
                     <input type="text" name="person" placeholder="person">
                     <input type="text" name="location" placeholder="location">
                     <input type="text" name="sighted" placeholder="date sighted">
-                    <input type="hidden" name="flower-input" id="flower-input" value="">
+                    <input type="hidden" name="flower-input" id="flower-input-sighting" value="">
                     <input type="hidden" name="insert-sighting" value="">
                     <input type="submit" class="ree ree-submit" id="insert-sighting-submit" value="Submit">
                 </form>
