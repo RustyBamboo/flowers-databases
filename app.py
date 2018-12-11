@@ -58,9 +58,11 @@ def setupDatabase():
     conn = sqlite3.connect('flowers.db')
     c = conn.cursor()
 
-    # Create the log table, logging triggers, and indexes
+    # Create the log table, user table, logging triggers, and indexes
     c.executescript("""CREATE TABLE LOG (EVENT TEXT NOT NULL, TIME datetime default current_timestamp);
                     
+                    CREATE TABLE USERS (USER TEXT NOT NULL, HASH TEXT NOT NULL);
+
                     CREATE TRIGGER INSERT_FLOWERS AFTER INSERT ON FLOWERS
                     BEGIN
                         INSERT INTO LOG(EVENT) values('Inserting into FLOWERS values: ' || NEW.GENUS || ', ' || NEW.SPECIES || ', ' || NEW.COMNAME);
