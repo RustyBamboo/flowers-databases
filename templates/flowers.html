@@ -59,6 +59,9 @@
                             if(data.success == true) {
                                 $("#flower-update-submit").val("Successful!");
                             }
+                            if(data.success == false) {
+                                $("#flower-update-submit").val("Failed!");
+                            }
                         }
                     });
                     e.preventDefault();
@@ -78,6 +81,10 @@
                             if(data.success == true) {
                                 $("#insert-sighting-submit").val("Added!");
                             }
+                            if(data.success == false) {
+                                $("#insert-sighting-submit").val("Failed!");
+                            }
+
                         }
                     });
                     e.preventDefault();

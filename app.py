@@ -250,12 +250,18 @@ def update():
         location = request.form['location']
         sighted = request.form['sighted']
         f = request.form['flower-input']
-        insertSighting(f, person, location, sighted)
+        try:
+            insertSighting(f, person, location, sighted)
+        except e:
+            return json.dumps({'success':False}), 200, {'ContentType':'application/json'} 
         return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
     g = request.form['genus']
     s = request.form['species']
     f = request.form['flower-input']
-    updateFlower(f, g, s)
+    try:
+        updateFlower(f, g, s)
+    except e:
+        return json.dumps({'success':False}), 200, {'ContentType':'application/json'} 
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
 
 @app.route('/recent', methods=['POST'])
