@@ -2,6 +2,7 @@
 
 from flask import Flask, render_template, redirect, jsonify, request
 import json
+import hashlib
 from google_images_download import google_images_download
 import sqlite3
 
@@ -126,7 +127,30 @@ def log():
 
 @app.route('/')
 def index():
-    return redirect('/flowers')
+    return app.send_static_file('login.html')
+
+@app.route('/register')
+def register():
+    return app.send_static_file('register.html')
+
+
+def encrypt_string(hash_string):
+    sha_signature = \
+        hashlib.sha256(hash_string.encode()).hexdigest()
+    return sha_signature
+
+@app.route('/register', methods=['POST'])
+def register_new():
+    username = request.form['user']
+    password = request.form['pass']
+    cpassword = request.form['pass-confirm']
+    conn = sqlite3.connect('flowers.db')
+    c = conn.cursor()
+    c.execute("INSERT INTO USERS VALUES(?,?)", (username, encrypt_string(password)))
+    ret = c.fetchall()
+    conn.close()
+
+    return app.send_static_file('login.html')
 
 @app.route('/flowers')
 def flowers():
