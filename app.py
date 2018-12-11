@@ -14,9 +14,10 @@ def queryFlowerList():
     return ret
 
 def queryFlower(flower):
+    print(flower)
     conn = sqlite3.connect('flowers.db')
     c = conn.cursor()
-    c.execute("SELECT * FROM SIGHTINGS WHERE NAME=? ORDER BY SIGHTED DESC LIMIT 10", flower)
+    c.execute("SELECT * FROM SIGHTINGS WHERE NAME=? ORDER BY SIGHTED DESC LIMIT 10", (flower,))
     ret = c.fetchall()
     conn.close()
     return ret
@@ -159,5 +160,14 @@ def update():
     f = request.form['flower-input']
     updateFlower(f, g, s)
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+
+@app.route('/recent', methods=['POST'])
+def recent():
+    print(request.form['flower'])
+    sightings = queryFlower(request.form['flower'])
+    # ignore the name
+    sightings = [i[1:] for i in sightings]
+    return json.dumps({'success':True, 'sightings':sightings}), 200, {'ContentType':'application/json'} 
+
 
 app.run(debug=True)
