@@ -1,1 +1,52 @@
-<pre>{{ content }}</pre>
+<!DOCTYPE>
+<html>
+    <head>
+        <link rel="stylesheet" href="static/style-app.css" media="screen" type="text/css" />
+        <style>
+            .log-container {
+                width: 70%;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 15px;
+                text-align: center;
+            }
+            .s {
+                border: 1px solid black;
+                overflow: hidden;
+                margin: 5px;
+            }
+            .c {
+                display: inline-block;
+                padding: 10px;
+                float: left;
+            }
+            .t {
+                display: inline-block;
+                padding: 10px;
+                float: right;
+            }
+        
+        </style>
+    </head>
+
+    <body>
+        <div class="bar">
+            <h1 style="position:absolute; top:4; left:50%; transform: translate(-50%,0);
+            ">Log</h1>
+            <ul>
+                <li><a class="active" href="logout">Logout</a></li>
+                <li><a href="flowers">Flowers</a></li>
+            </ul>
+        </div>
+
+        <div class="log-container">
+        {% for c, t in content %}
+        <div class="s">
+        <div class="c">{{c}}</div>
+        <div class="t">{{t}}</div>
+        </div>
+        
+        {% endfor %}
+        </div>
+    </body>
+</html>

@@ -133,34 +133,47 @@ def log():
     c = conn.cursor()
     c.execute("SELECT * FROM LOG")
     ret = c.fetchall()
+    print(ret)
     conn.close()
     return render_template("log.html", content = ret)
 
 @app.route('/')
 def index():
+    '''
+        Redirect to index
+    '''
     if "loggedin" in session:
         return redirect("/flowers")
     return app.send_static_file('login.html')
 
 @app.route('/register')
 def register():
+    '''
+        Redirect to register page after checking session
+    '''
     if "loggedin" in session:
         return redirect("/flowers")
     return app.send_static_file('register.html')
 
 
 def encrypt_string(hash_string):
+    '''
+        Helper function to hash to sha256
+    '''
     sha_signature = \
         hashlib.sha256(hash_string.encode()).hexdigest()
     return sha_signature
 
 @app.route('/register', methods=['POST'])
 def register_new():
+    '''
+        Password validation and account creation
+    '''
     username = request.form['user']
     password = request.form['pass']
     cpassword = request.form['pass-confirm']
-    #print(username)
-    #print(encrypt_string(password))
+    if password != cpassword or len(password) < 3:
+        return redirect("/register")
     conn = sqlite3.connect('flowers.db')
     c = conn.cursor()
     c.execute("INSERT INTO USERS VALUES(?,?)", (username, encrypt_string(password)))
