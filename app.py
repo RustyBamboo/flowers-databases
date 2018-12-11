@@ -129,11 +129,13 @@ app.secret_key = 'plzjustenditall'
 
 @app.route('/log')
 def log():
+    '''
+        Return log
+    '''
     conn = sqlite3.connect('flowers.db')
     c = conn.cursor()
     c.execute("SELECT * FROM LOG")
     ret = c.fetchall()
-    print(ret)
     conn.close()
     return render_template("log.html", content = ret)
 
@@ -206,6 +208,9 @@ def login():
 
 @app.route('/logout')
 def logout():
+    '''
+        Kill session if exists
+    '''
     if "loggedin" in session:
         session.pop("loggedin", None)
     return redirect("/")
@@ -213,7 +218,7 @@ def logout():
 @app.route('/flowers')
 def flowers():
     '''
-        Show all flowers and fetch images from google
+        Show all flowers and fetch images from google if necessary
     '''
     import os
     flowers = queryFlowerList()
@@ -237,7 +242,9 @@ def flowers():
 
 @app.route('/flowers', methods=['POST'])
 def update():
-    print(request.form)
+    '''
+        Either modify flower or insert new sighting
+    '''
     if "insert-sighting" in request.form:
         person = request.form['person']
         location = request.form['location']
@@ -253,6 +260,9 @@ def update():
 
 @app.route('/recent', methods=['POST'])
 def recent():
+    '''
+        Return recent sightings
+    '''
     sightings = queryFlower(request.form['flower'])
     # ignore the name
     sightings = [i[1:] for i in sightings]
