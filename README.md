@@ -1,5 +1,7 @@
 # Flowers Database
 
+Members: Steven Spinner and Daniel Volya
+
 A final project with a jQuery-powered frontend and Flask with SQLite3 powered backend.
 
 - Account registration
