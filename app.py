@@ -154,6 +154,8 @@ def register_new():
     username = request.form['user']
     password = request.form['pass']
     cpassword = request.form['pass-confirm']
+    print(username)
+    print(encrypt_string(password))
     conn = sqlite3.connect('flowers.db')
     c = conn.cursor()
     c.execute("INSERT INTO USERS VALUES(?,?)", (username, encrypt_string(password)))
@@ -161,6 +163,21 @@ def register_new():
     conn.close()
 
     return app.send_static_file('login.html')
+
+@app.route('/', methods=['POST'])
+def login():
+    username = request.form['user']
+    print(username)
+    password = request.form['pass']
+    conn = sqlite3.connect('flowers.db')
+    c = conn.cursor()
+    c.execute("SELECT HASH FROM USERS WHERE USER=?", (username,))
+    ret = c.fetchall()
+    print(ret)
+    conn.close()
+
+    return app.send_static_file('login.html')
+
 
 @app.route('/flowers')
 def flowers():
