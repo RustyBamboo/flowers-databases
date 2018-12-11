@@ -59,9 +59,11 @@ def setupDatabase():
     conn = sqlite3.connect('flowers.db')
     c = conn.cursor()
 
-    # Create the log table and the logging triggers
+    # Create the log table, user table, logging triggers, and indexes
     c.executescript("""CREATE TABLE LOG (EVENT TEXT NOT NULL, TIME datetime default current_timestamp);
                     
+                    CREATE TABLE USERS (USER TEXT NOT NULL, HASH TEXT NOT NULL);
+
                     CREATE TRIGGER INSERT_FLOWERS AFTER INSERT ON FLOWERS
                     BEGIN
                         INSERT INTO LOG(EVENT) values('Inserting into FLOWERS values: ' || NEW.GENUS || ', ' || NEW.SPECIES || ', ' || NEW.COMNAME);
@@ -106,6 +108,14 @@ def setupDatabase():
                     BEGIN
                         INSERT INTO LOG(EVENT) values('Deleting from SIGHTINGS values: ' || OLD.NAME || ', ' || OLD.PERSON || ', ' || OLD.LOCATION || ', ' || OLD.SIGHTED);
                     END;
+
+                    CREATE INDEX SIGHTINGS_NAME ON SIGHTINGS(NAME);
+                    
+                    CREATE INDEX SIGHTINGS_PERSON ON SIGHTINGS(PERSON);
+                    
+                    CREATE INDEX SIGHTINGS_LOCATION ON SIGHTINGS(LOCATION);
+    
+                    CREATE INDEX SIGHTINGS_SIGHTED ON SIGHTINGS(SIGHTED);
     """)
     conn.commit()
     
