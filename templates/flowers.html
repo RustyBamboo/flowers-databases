@@ -5,12 +5,27 @@
             Flowers
         </title>
         <style>
-div.gallery {
-    margin: 5px;
-    border: 1px solid #ccc;
-    float: left;
-    width: 180px;
+* {
+  font-family: 'Arial', sans-serif;
 }
+        #photos {
+            column-count: 5; /*Set the column count*/
+            -webkit-column-count: 5;
+            -moz-column-count: 5;
+
+            column-gap: 0; 
+            -webkit-column-gap:0;
+            -moz-column-gap: 0;
+
+            width:100%;
+        }
+        div.gallery {
+            display: inline-block;
+            width:100%;   
+            border: solid 1px #ccc;
+            text-align:center;
+            position: relative;
+        }
 
         div.gallery:hover {
             border: 1px solid #777;
@@ -22,8 +37,15 @@ div.gallery {
         }
 
         div.desc {
-            padding: 15px;
-            text-align: center;
+            position: absolute;
+            top:0;
+            left: 0;
+            background-color:rgba(0,0,0,0.6);
+	    width:auto;
+            height: auto;
+	    box-sizing:border-box;
+            padding: 5px;
+            color: white;
         }
 
         .popup{
@@ -195,12 +217,14 @@ div.gallery {
 
     </head>
     <body>
+        <section id="photos">
         {% for img, flower in hists %}
         <div id="{{flower}}" class="gallery">
             <img src="{{url_for('static', filename=img)}}" alt="{{flower}}" width="200px" style="float:left;">
             <div class="desc">{{flower}}</div>
         </div>
         {% endfor %}
+        </div>
 
         <div class="show">
             <div class="overlay"></div>
