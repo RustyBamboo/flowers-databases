@@ -155,6 +155,14 @@ def flowers():
 
 @app.route('/flowers', methods=['POST'])
 def update():
+    print(request.form)
+    if "insert-sighting" in request.form:
+        person = request.form['person']
+        location = request.form['location']
+        sighted = request.form['sighted']
+        f = request.form['flower-input']
+        insertSighting(f, person, location, sighted)
+        return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
     g = request.form['genus']
     s = request.form['species']
     f = request.form['flower-input']
@@ -163,7 +171,6 @@ def update():
 
 @app.route('/recent', methods=['POST'])
 def recent():
-    print(request.form['flower'])
     sightings = queryFlower(request.form['flower'])
     # ignore the name
     sightings = [i[1:] for i in sightings]
